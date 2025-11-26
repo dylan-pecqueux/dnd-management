@@ -1,1 +1,11 @@
-<p>create-encounter works!</p>
+<div>
+<form (submit)="createEncounter($event)">
+  <label>
+    Nom du combat :
+    <input type="text" [field]="encounterForm.name" />
+  </label>
+  <button type="submit">Créer le combat</button>
+</form>
+</div>
+
+
