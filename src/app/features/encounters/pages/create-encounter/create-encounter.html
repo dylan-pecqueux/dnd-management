@@ -1,10 +1,64 @@
 <div>
-<form (submit)="createEncounter($event)">
+<form [formGroup]="encounterForm" (submit)="submitEncounter()">
   <label>
     Nom du combat :
-    <input type="text" [field]="encounterForm.name" />
+    <input type="text" formControlName="name" />
   </label>
   <button type="submit">Créer le combat</button>
+
+  <div>
+    <h3>Monstres disponibles :</h3>
+    <ul>
+      @for (monster of monsters(); track $index) {
+      <li>
+        {{ monster.name }} (Niveau: {{ monster.challengeRating }})
+      </li>
+      <button type="button" (click)="addToEncounterList(monster)">Ajouter au combat</button>
+      }
+    </ul>
+  </div>
+  <div>
+    <h3>Aventuriers disponibles :</h3>
+    <ul>
+      @for (adventurer of adventurers(); track $index) {
+      <li>
+        {{ adventurer.name }} (Niveau: {{ adventurer.level }})
+      </li>
+      <button type="button" (click)="addToEncounterList(adventurer)">Ajouter au combat</button>
+      }
+    </ul>
+  </div>
+  <div>
+    <h3>Participants au combat :</h3>
+    <ul formArrayName="combatants">
+      @for (combatant of combatants.controls; track $index; let i = $index) {
+        <li [formGroupName]="i">
+          <label>
+            Nom :
+            <input formControlName="name" placeholder="Nom" />
+          </label>
+          <label>
+            Initiative :
+            <input type="number" formControlName="initiative" />
+          </label>
+          <label>
+            Points de vie max :
+            <input type="number" formControlName="maxHp" />
+          </label>
+          <label>
+            Points de vie actuels :
+            <input type="number" formControlName="currentHp" />
+          </label>
+          <label>
+            Points de vie temporaires :
+            <input type="number" formControlName="tempHp" />
+          </label>
+
+          <button type="button" (click)="removeCombatant(i)">Supprimer</button>
+        </li>
+      }
+    </ul>
+  </div>
 </form>
 </div>
 

@@ -9,7 +9,7 @@ import { Monster } from '../models/monster.model';
 export class MonsterService {
     constructor(private http: HttpClient) {}
 
-  getMonsters(): Observable<Monster> {
-    return this.http.get<Monster>('/monster');
+  getMonsters(): Observable<Monster[]> {
+    return this.http.get<Monster[]>('/monster');
   }
 }

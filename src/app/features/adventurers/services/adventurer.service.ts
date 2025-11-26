@@ -9,8 +9,8 @@ import { Adventurer } from '../models/adventurer.model';
 export class AdventurerService {
     constructor(private readonly http: HttpClient) {}
 
-  getAdventurers(): Observable<Adventurer> {
-    return this.http.get<Adventurer>('/adventurer');
+  getAdventurers(): Observable<Adventurer[]> {
+    return this.http.get<Adventurer[]>('/adventurer');
   }
   
 }
