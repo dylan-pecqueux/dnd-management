@@ -6,4 +6,9 @@ export const ENCOUNTER_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/create-encounter/create-encounter').then(m => m.CreateEncounter),
   },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/encounter-list/encounter-list').then(m => m.EncounterList),
+  }
 ];

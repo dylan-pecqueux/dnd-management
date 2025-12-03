@@ -7,6 +7,7 @@ import { Monster } from '../../../monsters/models/monster.model';
 import { Adventurer } from '../../../adventurers/models/adventurer.model';
 import { CreateCombatantDto } from '../../dto/create-combatant.dto';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { catchError, forkJoin, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-create-encounter',
@@ -79,6 +80,36 @@ export class CreateEncounter implements OnInit {
 
   submitEncounter() {
     console.log(this.encounterForm.value);
+
+    if (this.encounterForm.invalid) {
+      console.log('Form is invalid');
+      this.encounterForm.markAllAsTouched();
+      return;
+    }
+
+    const dto = {
+      name: this.encounterForm.value.name
+    };
+
+    this.encounterService.create(dto).pipe(
+      switchMap((created: any) => {
+        const encounterId = created.id;
+
+        const calls = this.combatants.controls.map((ctrl) =>
+          this.encounterService.addCombatant(encounterId, (ctrl as FormGroup).value)
+            .pipe(catchError(err => {
+              console.error('Error posting combatant', err);
+              return of(null);
+            }))
+        );
+
+        return forkJoin(calls);
+      })
+    ).subscribe(() => {
+      console.log('Encounter created !');
+      this.encounterForm.reset();
+      this.combatants.clear();
+    });
   }
 
   private createCombatantGroup(data: Partial<CreateCombatantDto>): FormGroup {

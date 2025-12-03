@@ -1,0 +1,19 @@
+<div>
+  <h2>Liste des combats</h2>
+  <ul>
+    @for (encounter of encounters(); track $index) {
+    <li>
+      <h3>{{ encounter.name }}</h3>
+      <p>Participants :</p>
+      <ul>
+        @for (combatant of encounter.combatants; track $index) {
+        <li>
+          {{ combatant.name }} - Initiative: {{ combatant.initiative }} - PV: {{ combatant.currentHp }}/{{ combatant.maxHp }} (+{{ combatant.tempHp }} temp)
+        </li>
+        }
+      </ul>
+      <button type="button" (click)="startEncounter(encounter.id)">Commencer le combat</button>
+    </li>
+    }
+  </ul>
+</div>
