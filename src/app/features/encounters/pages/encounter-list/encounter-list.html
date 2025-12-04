@@ -12,7 +12,7 @@
         </li>
         }
       </ul>
-      <button type="button" (click)="startEncounter(encounter.id)">Commencer le combat</button>
+      <a routerLink="/encounters/{{encounter.id}}">Commencer le combat</a>
     </li>
     }
   </ul>
