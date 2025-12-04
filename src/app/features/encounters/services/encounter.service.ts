@@ -28,7 +28,11 @@ export class EncounterService {
     return this.http.post(`/encounter/${encounterId}/combatant`, combatant);
   }
 
-  updateCombatantHp(combatantId: string, updateHpDto: UpdateHpDto): Observable<Combatant> {
+  updateCombatantHp(combatantId: number, updateHpDto: UpdateHpDto): Observable<Combatant> {
     return this.http.patch<Combatant>(`/encounter/combatant/${combatantId}/hp`, updateHpDto);
+  }
+
+  updateCombatantInitiative(combatantId: string, newInitiative: number): Observable<Combatant> {
+    return this.http.patch<Combatant>(`/encounter/combatant/${combatantId}/initiative`, { initiative: newInitiative });
   }
 }

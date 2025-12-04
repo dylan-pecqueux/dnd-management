@@ -1,12 +1,42 @@
-.card {
+.encounter-management {
   display: flex;
-  align-items: center;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  gap: 1rem;
 }
 
+.card-container {
+  width: 50%;
+  padding: 1rem;
+
+  .card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+}
+
+.details-container {
+  width: 50%;
+
+  .ability-table {
+    display: flex;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+  }
+}
 
 .card-img img {
   width: 100px;

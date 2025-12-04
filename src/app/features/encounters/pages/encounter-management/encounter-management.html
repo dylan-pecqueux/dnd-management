@@ -1,56 +1,147 @@
 <div>
   <h2>Gestion du combat</h2>
   @if (encounterDetails()) {
-      <div>
     <h3>{{ encounterDetails()?.name }}</h3>
     <p>Participants :</p>
-    <div>
-      @for (combatant of combatantsFormArray.controls; track $index; let i = $index) {
-        <div class="card">
-          <div class="card-left-content">
-            <h4>Inititative</h4>
-            <p>{{ getCombatant(i)?.initiative }}</p>
-          </div>
-          <div class="card-img">
-            @if (getCombatant(i)?.isMonster) {
-              <img src="{{getCombatant(i)?.monster?.imageUrl}}" alt="">
-            } @else {
-              <img src="https://www.aidedd.org/dnd-dice/dice.jpg" alt="">
-            }
-          </div>
-          <div class="card-middle-content">
-            <h3>{{ getCombatant(i)?.name }}</h3>
-            @if (getCombatant(i)?.isMonster) {
-              <div class="card-middle-content-top">
-                <p>AC : {{getCombatant(i)?.monster?.armorClass}}</p>
-                <p>Vitesse : {{getCombatant(i)?.monster?.speed}}</p>
-              </div>
-              <div>
-                <p>CR : {{getCombatant(i)?.monster?.challengeRating}}</p>
-              </div>
-            } @else {
-                <div class="">
-                  <p>Classe : {{getCombatant(i)?.adventurer?.class}}</p>
-                  <p>Niveau : {{getCombatant(i)?.adventurer?.level}}</p>
+    <div class="encounter-management">
+      <div class="card-container">
+        @for (combatant of combatantsFormArray.controls; track $index; let i = $index) {
+          <a class="card" (click)="getCombatantDetails(getCombatant(i))">
+            <form [formGroup]="combatant" class="card-left-content">
+              <label for="initiative-{{i}}">Initiative :</label>
+              <input id="initiative-{{i}}" type="number" formControlName="initiative" />
+              <button type="button" (click)="updateInitiative(i)">Mettre à jour</button>
+            </form>
+            <div class="card-img">
+              @if (getCombatant(i)?.isMonster) {
+                <img src="{{getCombatant(i)?.monster?.imageUrl}}" alt="">
+              } @else {
+                <img src="https://www.aidedd.org/dnd-dice/dice.jpg" alt="">
+              }
+            </div>
+            <div class="card-middle-content">
+              <h3>{{ getCombatant(i)?.name }}</h3>
+              @if (getCombatant(i)?.isMonster) {
+                <div class="card-middle-content-top">
+                  <p>AC : {{getCombatant(i)?.monster?.armorClass}}</p>
+                  <p>Vitesse : {{getCombatant(i)?.monster?.speed}}</p>
                 </div>
-            }
+              } @else {
+                  <div class="">
+                    <p>Classe : {{getCombatant(i)?.adventurer?.class}}</p>
+                    <p>Niveau : {{getCombatant(i)?.adventurer?.level}}</p>
+                  </div>
+              }
+            </div>
+            <div class="card-right-content">
+              <h4>HP</h4>
+              <p>{{ getCombatant(i)?.currentHp }}/{{ getCombatant(i)?.maxHp }}</p>
+            </div>
+            <!-- <form [formGroup]="combatant">
+              <label for="damage-{{i}}">Dégat reçu :</label>
+              <input id="damage-{{i}}" type="number" formControlName="damage" />
+              <label for="damageType-{{i}}">Type de dégât :</label>
+              <input id="damageType-{{i}}" type="text" formControlName="damageType" />
+              <label for="heal-{{i}}">Soins reçus :</label>
+              <input id="heal-{{i}}" type="number" formControlName="heal" />
+              <button type="button" (click)="updateHP(i)">Mettre à jour</button>
+            </form> -->
+          </a>
+        }
+      </div>
+      @if (combatantDetails()) {
+        <div class="details-container">
+          <p>{{combatantDetails()?.name}}</p>
+          <form [formGroup]="damageForm">
+            <label for="damage">Changement de PV :</label>
+            <input id="damage" type="number"  formControlName="damage" />
+            <label for="damageType">Type de dégât (optionnel) :</label>
+            <input id="damageType" type="text"  formControlName="damageType" />
+            <label for="heal">Soins reçus :</label>
+            <input id="heal" type="number"  formControlName="heal" />
+            <button type="button" (click)="updateHP(combatantDetails()?.id)">Mettre à jour les PV</button>
+          </form>
+          <div class="details-header">
+            <p>Type : {{ combatantDetails()?.monster?.creatureType }}</p>
+            <p>Taille : {{ combatantDetails()?.monster?.size }}</p>
+            <p>Alignement : {{ combatantDetails()?.monster?.alignment }}</p>
           </div>
-          <div class="card-right-content">
-            <h4>HP</h4>
-            <p>{{ getCombatant(i)?.currentHp }}/{{ getCombatant(i)?.maxHp }}</p>
+          <div class="ability-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                  <th scope="col">mod</th>
+                  <th scope="col">save</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">For</th>
+                  <td>{{combatantDetails()?.monster?.ability?.str}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.str_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.str_save}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Int</th>
+                  <td>{{combatantDetails()?.monster?.ability?.int}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.int_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.int_save}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                  <th scope="col">mod</th>
+                  <th scope="col">save</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Dex</th>
+                  <td>{{combatantDetails()?.monster?.ability?.dex}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.dex_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.dex_save}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Sag</th>
+                  <td>{{combatantDetails()?.monster?.ability?.wis}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.wis_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.wis_save}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col"></th>
+                  <th scope="col">mod</th>
+                  <th scope="col">save</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Con</th>
+                  <td>{{combatantDetails()?.monster?.ability?.con}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.con_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.con_save}}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Cha</th>
+                  <td>{{combatantDetails()?.monster?.ability?.cha}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.cha_mod}}</td>
+                  <td>{{combatantDetails()?.monster?.ability?.cha_save}}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <!-- <form [formGroup]="combatant">
-            <label for="damage-{{i}}">Dégat reçu :</label>
-            <input id="damage-{{i}}" type="number" formControlName="damage" />
-            <label for="damageType-{{i}}">Type de dégât :</label>
-            <input id="damageType-{{i}}" type="text" formControlName="damageType" />
-            <label for="heal-{{i}}">Soins reçus :</label>
-            <input id="heal-{{i}}" type="number" formControlName="heal" />
-            <button type="button" (click)="updateHP(i)">Mettre à jour</button>
-          </form> -->
         </div>
       }
     </div>
-  </div>
   }
 </div>
