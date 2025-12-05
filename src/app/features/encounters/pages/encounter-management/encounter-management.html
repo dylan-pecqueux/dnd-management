@@ -1,72 +1,74 @@
-<div>
-  <h2>Gestion du combat</h2>
+<div class="encounter-management-container">
   @if (encounterDetails()) {
-    <h3>{{ encounterDetails()?.name }}</h3>
-    <p>Participants :</p>
     <div class="encounter-management">
-      <div class="card-container">
-        @for (combatant of combatantsFormArray.controls; track $index; let i = $index) {
-          <a class="card" (click)="getCombatantDetails(getCombatant(i))">
-            <form [formGroup]="combatant" class="card-left-content">
-              <label for="initiative-{{i}}">Initiative :</label>
-              <input id="initiative-{{i}}" type="number" formControlName="initiative" />
-              <button type="button" (click)="updateInitiative(i)">Mettre à jour</button>
-            </form>
-            <div class="card-img">
-              @if (getCombatant(i)?.isMonster) {
-                <img src="{{getCombatant(i)?.monster?.imageUrl}}" alt="">
-              } @else {
-                <img src="https://www.aidedd.org/dnd-dice/dice.jpg" alt="">
-              }
-            </div>
-            <div class="card-middle-content">
-              <h3>{{ getCombatant(i)?.name }}</h3>
-              @if (getCombatant(i)?.isMonster) {
-                <div class="card-middle-content-top">
-                  <p>AC : {{getCombatant(i)?.monster?.armorClass}}</p>
-                  <p>Vitesse : {{getCombatant(i)?.monster?.speed}}</p>
-                </div>
-              } @else {
-                  <div class="">
-                    <p>Classe : {{getCombatant(i)?.adventurer?.class}}</p>
-                    <p>Niveau : {{getCombatant(i)?.adventurer?.level}}</p>
+      <div class="left-container">
+        <div class="card-container">
+          @for (combatant of combatantsFormArray.controls; track $index; let i = $index) {
+            <a class="card" (click)="getCombatantDetails(getCombatant(i))">
+              <form [formGroup]="combatant" class="card-left-content">
+                <label for="initiative-{{i}}">Initiative</label>
+                <input id="initiative-{{i}}" type="number" formControlName="initiative" (blur)="updateInitiative(i)" />
+              </form>
+              <div class="card-img">
+                @if (getCombatant(i)?.isMonster) {
+                  <img src="{{getCombatant(i)?.monster?.imageUrl}}" alt="">
+                } @else {
+                  <img src="https://www.aidedd.org/dnd-dice/dice.jpg" alt="">
+                }
+              </div>
+              <div class="card-middle-content">
+                <h3>{{ getCombatant(i)?.name }}</h3>
+                @if (getCombatant(i)?.isMonster) {
+                  <div class="card-middle-content-top">
+                    <p><strong>AC :</strong> {{getCombatant(i)?.monster?.armorClass}}</p>
+                    <p><strong>Vitesse :</strong> {{getCombatant(i)?.monster?.speed}}</p>
                   </div>
-              }
-            </div>
-            <div class="card-right-content">
-              <h4>HP</h4>
-              <p>{{ getCombatant(i)?.currentHp }}/{{ getCombatant(i)?.maxHp }}</p>
-            </div>
-            <!-- <form [formGroup]="combatant">
-              <label for="damage-{{i}}">Dégat reçu :</label>
-              <input id="damage-{{i}}" type="number" formControlName="damage" />
-              <label for="damageType-{{i}}">Type de dégât :</label>
-              <input id="damageType-{{i}}" type="text" formControlName="damageType" />
-              <label for="heal-{{i}}">Soins reçus :</label>
-              <input id="heal-{{i}}" type="number" formControlName="heal" />
-              <button type="button" (click)="updateHP(i)">Mettre à jour</button>
-            </form> -->
-          </a>
-        }
+                } @else {
+                    <div class="card-middle-content-top">
+                      <p><strong>Classe :</strong> {{getCombatant(i)?.adventurer?.class}}</p>
+                      <p><strong>Niveau :</strong> {{getCombatant(i)?.adventurer?.level}}</p>
+                    </div>
+                }
+              </div>
+              <div class="card-right-content">
+                <p>{{ getCombatant(i)?.currentHp }}/{{ getCombatant(i)?.maxHp }}</p>
+              </div>
+            </a>
+          }
+        </div>
+        <div class="turn-container">
+          <button type="button">Précédant</button>
+          <div class="turn">
+            <h3>Tour</h3>
+            <p>{{encounterDetails()?.turn}}</p>
+          </div>
+          <button type="button" (click)="updateTurn()">Suivant</button>
+        </div>
       </div>
       @if (combatantDetails()) {
         <div class="details-container">
-          <p>{{combatantDetails()?.name}}</p>
-          <form [formGroup]="damageForm">
-            <label for="damage">Changement de PV :</label>
+          <form [formGroup]="damageForm" class="damage-form">
+            <label for="damage">Dégats</label>
             <input id="damage" type="number"  formControlName="damage" />
-            <label for="damageType">Type de dégât (optionnel) :</label>
+            <label for="damageType">Type</label>
             <input id="damageType" type="text"  formControlName="damageType" />
-            <label for="heal">Soins reçus :</label>
+            <label for="heal">Heal</label>
             <input id="heal" type="number"  formControlName="heal" />
             <button type="button" (click)="updateHP(combatantDetails()?.id)">Mettre à jour les PV</button>
           </form>
-          <div class="details-header">
-            <p>Type : {{ combatantDetails()?.monster?.creatureType }}</p>
-            <p>Taille : {{ combatantDetails()?.monster?.size }}</p>
-            <p>Alignement : {{ combatantDetails()?.monster?.alignment }}</p>
-          </div>
-          <div class="ability-table">
+          <section class="details-header">
+            <h2>{{combatantDetails()?.name}}</h2>
+            <p class="monster-meta">
+              {{ combatantDetails()?.monster?.size}} {{ combatantDetails()?.monster?.creatureType }}, {{ combatantDetails()?.monster?.alignment }}
+            </p>
+          </section>
+          <section class="combat-stats">
+            <p><strong>CA :</strong> {{combatantDetails()?.monster?.armorClass}}</p>
+            <p><strong>PV :</strong> {{combatantDetails()?.monster?.hitPoints}} ({{combatantDetails()?.monster?.hitDice}})</p>
+            <p><strong>Vitesse :</strong> {{combatantDetails()?.monster?.speed}}</p>
+            <p><strong>Initiative : </strong> +{{combatantDetails()?.monster?.initiativeModifier}}</p>
+          </section>
+          <section class="ability-table">
             <table>
               <thead>
                 <tr>
@@ -139,7 +141,88 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </section>
+          <section class="info">
+            @if (combatantDetails()?.monster?.skills) {
+              <p><strong>Compétences : </strong>
+                @for (skill of combatantDetails()?.monster?.skills; track $index) {
+                  <span>{{ skill.name }} +{{ skill.value }} </span>
+                }
+              </p>
+            }
+            @if(combatantDetails()?.monster?.damageResistances) {
+              <p><strong>Résistance : </strong>
+                @for (item of combatantDetails()?.monster?.damageResistances; track $index) {
+                  <span>{{ item.name }} </span>
+                }
+              </p>
+            }
+            @if(combatantDetails()?.monster?.damageImmunities) {
+              <p><strong>Immunité : </strong>
+                @for (item of combatantDetails()?.monster?.damageImmunities; track $index) {
+                  <span>{{ item.name }} </span>
+                }
+              </p>
+            }
+            @if (combatantDetails()?.monster?.gear) {
+              <p><strong>Equipement</strong> {{ combatantDetails()?.monster?.gear }}</p>
+            }
+            @if (combatantDetails()?.monster?.senses) {
+              <p><strong>Sens : </strong>
+                @for (item of combatantDetails()?.monster?.senses; track $index) {
+                  <span>{{ item.name }} </span>
+                }
+              </p>
+            }
+            @if (combatantDetails()?.monster?.languages) {
+              <p><strong>Langues</strong> {{ combatantDetails()?.monster?.languages }}</p>
+            }
+            <p><strong>CR</strong> {{ combatantDetails()?.monster?.challengeRating }}</p>
+          </section>
+          @if (combatantDetails()?.monster?.traits?.length != 0) {
+            <section class="traits">
+              <h3>Traits</h3>
+              @for (trait of combatantDetails()?.monster?.traits; track $index) {
+                <div class="trait">
+                  <p><strong>{{ trait.name }}</strong></p>
+                  <p>{{ trait.description }}</p>
+                </div>
+              }
+            </section>
+          }
+          @if (combatantDetails()?.monster?.actions) {
+            <section class="actions">
+              <h3>Actions</h3>
+              @for (action of combatantDetails()?.monster?.actions; track $index) {
+                <div class="action">
+                  <p><strong>{{ action.name }}</strong></p>
+                  <p>{{ action.description }}</p>
+                </div>
+              }
+            </section>
+          }
+          @if (combatantDetails()?.monster?.reactions?.length != 0) {
+            <section class="reactions">
+              <h3>Réactions</h3>
+              @for (reaction of combatantDetails()?.monster?.reactions; track $index) {
+                <div class="reaction">
+                  <p><strong>{{ reaction.name }}</strong></p>
+                  <p>{{ reaction.description }}</p>
+                </div>
+              }
+            </section>
+          }
+          @if (combatantDetails()?.monster?.legendaryActions?.length != 0) {
+            <section class="legendary-actions">
+              <h3>Actions légendaires</h3>
+              @for (legendaryAction of combatantDetails()?.monster?.legendaryActions; track $index) {
+                <div class="legendary-action">
+                  <p><strong>{{ legendaryAction.name }}</strong></p>
+                  <p>{{ legendaryAction.description }}</p>
+                </div>
+              }
+            </section>
+          }
         </div>
       }
     </div>

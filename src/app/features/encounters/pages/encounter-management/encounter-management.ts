@@ -92,6 +92,17 @@ export class EncounterManagement implements OnInit {
     });
   }
 
+  updateTurn() {
+    this.encounterService.updateEncounterTurn(this.encounterId()).subscribe(() => {
+      this.encounterDetails.update(encounter => {
+        if (encounter) {
+          return { ...encounter, turn: encounter.turn + 1 };
+        }
+        return encounter;
+      });
+    })
+  }
+
   updateHP(combatantId: number | undefined) {
     if (combatantId) {
       const damageTake = this.damageForm.get('damage')?.value;
@@ -113,6 +124,8 @@ export class EncounterManagement implements OnInit {
       });
     }
   }
+
+  
 
   private initForm() {
     console.log('Initializing form with encounter details:', this.encounterDetails());

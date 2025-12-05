@@ -35,4 +35,8 @@ export class EncounterService {
   updateCombatantInitiative(combatantId: string, newInitiative: number): Observable<Combatant> {
     return this.http.patch<Combatant>(`/encounter/combatant/${combatantId}/initiative`, { initiative: newInitiative });
   }
+
+  updateEncounterTurn(encounterId: string): Observable<string> {
+    return this.http.patch<string>(`/encounter/${encounterId}/next-turn`, {});
+  }
 }
